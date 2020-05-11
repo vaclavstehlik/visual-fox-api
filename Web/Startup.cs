@@ -1,15 +1,16 @@
 ﻿using Web.Api.Database;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
-using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
-using Microsoft.EntityFrameworkCore;
 using GraphiQl;
 using GraphQL;
 using GraphQL.Types;
 using Web.Api.Graphql;
 using Microsoft.Extensions.Hosting;
+using Web.Services;
+using AutoWrapper;
+using Web.Interfaces;
 
 namespace Web
 {
@@ -29,6 +30,8 @@ namespace Web
             services.AddScoped<ISchema, RootSchema>();
             services.AddScoped<RootQuery>();
             services.AddSingleton<AuthorType>();
+
+            services.AddScoped<IRecommenderService, RecommenderService>();
             
             services.AddCors();
             services.AddMvc(option => option.EnableEndpointRouting = false);
@@ -43,6 +46,7 @@ namespace Web
 
             app.UseCors(builder => builder.WithOrigins("http://localhost:8080").AllowAnyHeader());
             app.UseGraphiQl("/graphql");
+            app.UseApiResponseAndExceptionWrapper(new AutoWrapperOptions { UseApiProblemDetailsException = true });
             app.UseMvc();
         }
     }
