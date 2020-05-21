@@ -1,6 +1,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using AutoWrapper.Filters;
 using Web.Api.Graphql;
 using GraphQL;
 using GraphQL.Types;
@@ -20,6 +21,7 @@ namespace Web.Controllers
         }
 
         [HttpPost]
+        [AutoWrapIgnore]
         public async Task<ActionResult> Post([FromBody] GraphQLQuery query)
         {
             var inputs = query.Variables.ToInputs();
