@@ -19,5 +19,6 @@ namespace Web.Api.Database
         }
 
         public DbSet<Author> Authors { get; set; }
+        public DbSet<Visualization> Visualizations { get; set; }
     }
 }

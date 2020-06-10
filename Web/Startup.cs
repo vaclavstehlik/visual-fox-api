@@ -30,6 +30,7 @@ namespace Web
             services.AddScoped<ISchema, RootSchema>();
             services.AddScoped<RootQuery>();
             services.AddSingleton<AuthorType>();
+            services.AddSingleton<VisualizationType>();
 
             services.AddScoped<IRecommenderService, RecommenderService>();
             

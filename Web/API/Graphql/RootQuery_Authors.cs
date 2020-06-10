@@ -18,13 +18,31 @@ namespace Web.Api.Graphql
                     var author = db.Authors.FirstOrDefault(i => i.Id.Equals(id));
                     return author;
                 });
-    
+
             Field<ListGraphType<AuthorType>>(
                 "authors",
                 resolve: context =>
                 {
                     var authors = db.Authors;
                     return authors;
+                });
+
+            Field<VisualizationType>(
+                "visualization",
+                arguments: new QueryArguments(new QueryArgument<IdGraphType> {Name = "id", Description = "The ID of the Visualization."}),
+                resolve: context =>
+                {
+                    var id = context.GetArgument<Guid>("id");
+                    var visualizations = db.Visualizations.FirstOrDefault(i => i.Id.Equals(id));
+                    return visualizations;
+                });
+
+            Field<ListGraphType<VisualizationType>>(
+                "visualizations",
+                resolve: context =>
+                {
+                    var visualizations = db.Visualizations;
+                    return visualizations;
                 });
         }
     }
