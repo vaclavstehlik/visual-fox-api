@@ -1,10 +1,15 @@
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Text.Json;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Newtonsoft.Json.Linq;
+using Web.Interfaces;
+using Web.Models;
 
 namespace Web.Controllers
 {
@@ -13,22 +18,47 @@ namespace Web.Controllers
     public class DatasetController : Controller
     {
         private readonly IWebHostEnvironment _env;
+        private readonly IDatasetAnalysisService _datasetAnalysisService;
 
-        public DatasetController(IWebHostEnvironment env)
+        public DatasetController(IWebHostEnvironment env, IDatasetAnalysisService datasetAnalysisService)
         {
             _env = env;
+            _datasetAnalysisService = datasetAnalysisService;
         }
 
         [HttpPost("Upload")]
         public async Task<IActionResult> Upload()
         {
+            var files = Request.Form.Files;
+            var fileInfo = await UploadDataset(files);
+            var analysis = await _datasetAnalysisService.GetDatasetFeatures(fileInfo.FullName);
+
+            var response = new
+            {
+                datasetFile = new
+                {
+                    name = Path.GetFileNameWithoutExtension(fileInfo.Name),
+                    format = fileInfo.Extension,
+                    size = fileInfo.Length
+                },
+                datasetAnalysis = new
+                {
+                    features = analysis.Features
+                }
+            };
+            
+            return Ok(response);
+        }
+
+        private async Task<FileInfo> UploadDataset(IFormFileCollection files)
+        {
             var uploadsRootFolder = Path.Combine(_env.ContentRootPath, "Uploads");
+
             if (!Directory.Exists(uploadsRootFolder))
             {
                 Directory.CreateDirectory(uploadsRootFolder);
             }
 
-            var files = Request.Form.Files;
             var filePaths = new List<string>();
 
             foreach (var file in files)
@@ -49,9 +79,7 @@ namespace Web.Controllers
 
             var fileInfo = new List<FileInfo>();
             filePaths.ForEach(x => fileInfo.Add(new FileInfo(x)));
-            var data = fileInfo.Select(x => new {filename = x.Name, filesize = x.Length}).ToList();
-
-            return Ok(new {files = data});
+            return fileInfo.FirstOrDefault();
         }
     }
 }

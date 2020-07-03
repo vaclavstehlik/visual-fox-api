@@ -33,6 +33,7 @@ namespace Web
             services.AddSingleton<VisualizationType>();
 
             services.AddScoped<IRecommenderService, RecommenderService>();
+            services.AddScoped<IDatasetAnalysisService, DatasetAnalysisService>();
             
             services.AddCors();
             services.AddMvc(option => option.EnableEndpointRouting = false);

@@ -63,7 +63,7 @@ namespace Web.API
                 new Visualization
                 {
                     Id = Guid.NewGuid(),
-                    Identifier = "streamgraph",
+                    Identifier = "stream_graph",
                 },
                 new Visualization
                 {
