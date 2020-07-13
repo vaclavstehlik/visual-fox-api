@@ -34,7 +34,7 @@ namespace Web
 
             services.AddScoped<IRecommenderService, RecommenderService>();
             services.AddScoped<IDatasetAnalysisService, DatasetAnalysisService>();
-            
+
             services.AddCors();
             services.AddMvc(option => option.EnableEndpointRouting = false);
         }
@@ -46,9 +46,9 @@ namespace Web
                 app.UseDeveloperExceptionPage();
             }
 
-            app.UseCors(builder => builder.WithOrigins("http://localhost:8080").AllowAnyHeader());
+            app.UseCors(builder => builder.WithOrigins("http://localhost:8080", "https://visual-fox-api.azurewebsites.net").AllowAnyHeader());
             app.UseGraphiQl("/graphql");
-            app.UseApiResponseAndExceptionWrapper(new AutoWrapperOptions { UseApiProblemDetailsException = true });
+            app.UseApiResponseAndExceptionWrapper(new AutoWrapperOptions {UseApiProblemDetailsException = true});
             app.UseMvc();
         }
     }
