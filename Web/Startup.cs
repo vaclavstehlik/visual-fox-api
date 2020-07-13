@@ -46,7 +46,7 @@ namespace Web
                 app.UseDeveloperExceptionPage();
             }
 
-            app.UseCors(builder => builder.WithOrigins("http://localhost:8080", "https://visual-fox-api.azurewebsites.net").AllowAnyHeader());
+            app.UseCors(builder => builder.WithOrigins("http://localhost:8080", "https://visual-fox.azurewebsites.net").AllowAnyHeader());
             app.UseGraphiQl("/graphql");
             app.UseApiResponseAndExceptionWrapper(new AutoWrapperOptions {UseApiProblemDetailsException = true});
             app.UseMvc();
