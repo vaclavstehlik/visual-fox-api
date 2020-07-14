@@ -43,14 +43,12 @@ namespace Web.Services
             // Run process
             using (var process = Process.Start(psi))
             {
+                throw new Exception("after process");
                 Guard.Against.Null(process, nameof(process));
 
                 errors = await process.StandardError.ReadToEndAsync();
                 results = await process.StandardOutput.ReadToEndAsync();
             }
-            
-            throw new Exception("after process");
-
 
             if (!string.IsNullOrEmpty(errors)) throw new RecommenderExternalException("Errors occured during the analysis of dataset.");
             Guard.Against.Null(results, nameof(results));
