@@ -51,7 +51,6 @@ namespace Web.Services
             process.Start();
 
             // Guard.Against.Null(process, nameof(process));
-            process.WaitForExit();
 
             errors = process.StandardError.ReadToEnd();
             results = process.StandardOutput.ReadToEnd();
