@@ -31,7 +31,6 @@ namespace Web.Controllers
         {
             var files = Request.Form.Files;
             var fileInfo = await UploadDataset(files);
-            return Ok($"ok {fileInfo.FullName}");
             var analysis = await _datasetAnalysisService.GetDatasetFeatures(fileInfo.FullName);
 
             var response = new

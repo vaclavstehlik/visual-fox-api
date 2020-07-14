@@ -1,3 +1,4 @@
+using System;
 using System.Diagnostics;
 using System.Text.Json;
 using System.Threading.Tasks;
@@ -35,6 +36,8 @@ namespace Web.Services
             psi.CreateNoWindow = true;
             psi.RedirectStandardOutput = true;
             psi.RedirectStandardError = true;
+            
+            throw new Exception($"python path: {psi.FileName}, argument: {psi.Arguments}");
 
             string errors;
             string results;
