@@ -36,18 +36,18 @@ namespace Web.Services
             psi.CreateNoWindow = true;
             psi.RedirectStandardOutput = true;
             psi.RedirectStandardError = true;
-            
+
             string errors;
             string results;
 
             // Run process
-            using (var process = Process.Start(psi))
-            {
-                Guard.Against.Null(process, nameof(process));
+            var process = Process.Start(psi);
 
-                errors = await process.StandardError.ReadToEndAsync();
-                results = await process.StandardOutput.ReadToEndAsync();
-            }
+            Guard.Against.Null(process, nameof(process));
+            process.WaitForExit();
+
+            errors = process.StandardError.ReadToEnd();
+            results = process.StandardOutput.ReadToEnd();
 
             if (!string.IsNullOrEmpty(errors)) throw new RecommenderExternalException("Errors occured during the analysis of dataset.");
             Guard.Against.Null(results, nameof(results));
