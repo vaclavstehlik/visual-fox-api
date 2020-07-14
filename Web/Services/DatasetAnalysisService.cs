@@ -48,6 +48,9 @@ namespace Web.Services
                 errors = await process.StandardError.ReadToEndAsync();
                 results = await process.StandardOutput.ReadToEndAsync();
             }
+            
+            throw new Exception("after process");
+
 
             if (!string.IsNullOrEmpty(errors)) throw new RecommenderExternalException("Errors occured during the analysis of dataset.");
             Guard.Against.Null(results, nameof(results));
