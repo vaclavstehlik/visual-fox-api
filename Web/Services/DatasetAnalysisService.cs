@@ -28,7 +28,7 @@ namespace Web.Services
         private async Task<DatasetAnalysis> RunProcess(string datasetPath)
         {
             // Process configuration
-            var psi = new ProcessStartInfo {FileName = Configuration.GetValue<string>("Python:Path")};
+            var psi = new ProcessStartInfo {FileName = "python3"};
             var script = Configuration.GetValue<string>("Recommender:DatasetAnalysis:Python");
 
             psi.Arguments = $"{script} --path {datasetPath}";
@@ -43,7 +43,6 @@ namespace Web.Services
             // Run process
             using (var process = Process.Start(psi))
             {
-                throw new Exception("after process");
                 Guard.Against.Null(process, nameof(process));
 
                 errors = await process.StandardError.ReadToEndAsync();
