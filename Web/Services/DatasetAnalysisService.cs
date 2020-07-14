@@ -37,8 +37,6 @@ namespace Web.Services
             psi.RedirectStandardOutput = true;
             psi.RedirectStandardError = true;
             
-            throw new Exception($"python path: {psi.FileName}, argument: {psi.Arguments}");
-
             string errors;
             string results;
 

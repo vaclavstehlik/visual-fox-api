@@ -33,6 +33,7 @@ namespace Web.Controllers
             var fileInfo = await UploadDataset(files);
             var analysis = await _datasetAnalysisService.GetDatasetFeatures(fileInfo.FullName);
 
+            return Ok("beforeResponse");
             var response = new
             {
                 datasetFile = new
