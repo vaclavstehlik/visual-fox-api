@@ -28,22 +28,29 @@ namespace Web.Services
         private async Task<DatasetAnalysis> RunProcess(string datasetPath)
         {
             // Process configuration
-            var psi = new ProcessStartInfo {FileName = "python3"};
             var script = Configuration.GetValue<string>("Recommender:DatasetAnalysis:Python");
 
-            psi.Arguments = $"{script} --path {datasetPath}";
-            psi.UseShellExecute = false;
-            psi.CreateNoWindow = true;
-            psi.RedirectStandardOutput = true;
-            psi.RedirectStandardError = true;
+            var process = new Process()
+            {
+                StartInfo =
+                {
+                    FileName = Configuration.GetValue<string>("Python:Path"),
+                    Arguments = $"{script} --path {datasetPath}",
+                    UseShellExecute = false,
+                    CreateNoWindow = true,
+                    RedirectStandardOutput = true,
+                    RedirectStandardError = true
+                }
+            };
+
 
             string errors;
             string results;
 
             // Run process
-            var process = Process.Start(psi);
+            process.Start();
 
-            Guard.Against.Null(process, nameof(process));
+            // Guard.Against.Null(process, nameof(process));
             process.WaitForExit();
 
             errors = process.StandardError.ReadToEnd();
