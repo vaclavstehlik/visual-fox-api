@@ -31,7 +31,7 @@ namespace Web.Controllers
         {
             var files = Request.Form.Files;
             var fileInfo = await UploadDataset(files);
-            var analysis = await _datasetAnalysisService.GetDatasetFeatures(fileInfo.FullName);
+            var analysis = await _datasetAnalysisService.GetDatasetFeatures(fileInfo.FullName, Path.Combine(_env.ContentRootPath, "Uploads/py-test/test.py"));
 
             return Ok("beforeResponse");
             var response = new

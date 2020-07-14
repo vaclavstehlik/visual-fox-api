@@ -19,13 +19,13 @@ namespace Web.Services
             Configuration = configuration;
         }
 
-        public Task<DatasetAnalysis> GetDatasetFeatures(string datasetPath)
+        public Task<DatasetAnalysis> GetDatasetFeatures(string datasetPath, string appPath)
         {
-            var result = RunProcess(datasetPath);
+            var result = RunProcess(datasetPath, appPath);
             return result;
         }
 
-        private async Task<DatasetAnalysis> RunProcess(string datasetPath)
+        private async Task<DatasetAnalysis> RunProcess(string datasetPath, string appPath)
         {
             // Process configuration
             var script = Configuration.GetValue<string>("Recommender:DatasetAnalysis:Python");
@@ -35,7 +35,7 @@ namespace Web.Services
                 StartInfo =
                 {
                     FileName = Configuration.GetValue<string>("Python:Path"),
-                    Arguments = $"{script} --path {datasetPath}",
+                    Arguments = $"{appPath}",
                     UseShellExecute = false,
                     CreateNoWindow = true,
                     RedirectStandardOutput = true,

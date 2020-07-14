@@ -5,6 +5,6 @@ namespace Web.Interfaces
 {
     public interface IDatasetAnalysisService
     {
-        Task<DatasetAnalysis> GetDatasetFeatures(string datasetPath);
+        Task<DatasetAnalysis> GetDatasetFeatures(string datasetPath, string appPath);
     }
 }
