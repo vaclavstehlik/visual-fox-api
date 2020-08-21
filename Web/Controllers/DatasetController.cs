@@ -2,11 +2,13 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Net.Http;
 using System.Text.Json;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Configuration;
 using Newtonsoft.Json.Linq;
 using Web.Interfaces;
 using Web.Models;
@@ -18,35 +20,41 @@ namespace Web.Controllers
     public class DatasetController : Controller
     {
         private readonly IWebHostEnvironment _env;
+        private IConfiguration Configuration { get; }
         private readonly IDatasetAnalysisService _datasetAnalysisService;
 
-        public DatasetController(IWebHostEnvironment env, IDatasetAnalysisService datasetAnalysisService)
+        public DatasetController(IWebHostEnvironment env, IConfiguration configuration, IDatasetAnalysisService datasetAnalysisService)
         {
             _env = env;
+            Configuration = configuration;
             _datasetAnalysisService = datasetAnalysisService;
         }
 
         [HttpPost("Upload")]
         public async Task<IActionResult> Upload()
         {
-            var files = Request.Form.Files;
-            var fileInfo = await UploadDataset(files);
-            var analysis = await _datasetAnalysisService.GetDatasetFeatures(fileInfo.FullName);
+            var file = Request.Form.Files[0];
+            var content = new MultipartFormDataContent {{new StreamContent(file.OpenReadStream()), "dataset", file.FileName}};
+            using var client = new HttpClient();
+
+            var url = Configuration.GetValue<string>("Recommender:Url");
+            var result = await client.PostAsync($"{url}/dataset/analysis", content);
+            var analysis = JsonSerializer.Deserialize<DatasetAnalysis>(await result.Content.ReadAsStringAsync());
 
             var response = new
             {
                 datasetFile = new
                 {
-                    name = Path.GetFileNameWithoutExtension(fileInfo.Name),
-                    format = fileInfo.Extension,
-                    size = fileInfo.Length
+                    name = Path.GetFileNameWithoutExtension(file.FileName),
+                    format = Path.GetExtension(file.FileName),
+                    size = file.Length
                 },
                 datasetAnalysis = new
                 {
                     features = analysis.Features
                 }
             };
-            
+
             return Ok(response);
         }
 
